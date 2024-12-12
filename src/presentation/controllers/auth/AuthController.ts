@@ -58,7 +58,7 @@ export class SignInController extends OpenAPIRoute {
 
         try {
             const signInUseCase = new SignInUseCase(authService);
-
+            
             const result = await signInUseCase.execute(email, password);
 
             return {

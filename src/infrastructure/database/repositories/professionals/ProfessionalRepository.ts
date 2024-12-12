@@ -1,0 +1,123 @@
+import { createClient } from '@supabase/supabase-js';
+import { Professional } from 'domain/entities/professionals/Professional';
+import { IProfessionalRepository } from 'domain/interfaces/professionals/IProfessionalRepository';
+import { SUPABASE_KEY, SUPABASE_URL } from '../../../../env';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+export class ProfessionalRepository implements IProfessionalRepository {
+
+    async findById(id: number): Promise<Professional | null> {
+        const { data, error } = await supabase
+            .from('Professional')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            console.error(error);
+            return null;
+        }
+
+        return data
+            ? new Professional(
+                data.id,
+                data.name,
+                data.role,
+                data.bio,
+                data.imageUrl,
+                new Date(data.createdAt)
+            )
+            : null;
+    }
+
+    async findAll(): Promise<Professional[]> {
+        const { data, error } = await supabase
+            .from('Professional')
+            .select('*');
+
+        if (error) {
+            console.error(error);
+            return [];
+        }
+
+        return data.map((professional: any) =>
+            new Professional(
+                professional.id,
+                professional.name,
+                professional.role,
+                professional.bio,
+                professional.imageUrl,
+                new Date(professional.createdAt)
+            )
+        );
+    }
+
+    async create(professional: Partial<Professional>): Promise<Professional> {
+        const { data, error } = await supabase
+            .from('Professional')
+            .insert([
+                {
+                    name: professional.name,
+                    role: professional.role,
+                    bio: professional.bio,
+                    imageUrl: professional.imageUrl,
+                    createdAt: new Date(),
+                }
+            ])
+            .select()
+            .single();
+
+        if (error !== null) {
+            console.error(error);
+            throw new Error('Failed to create professional');
+        }
+
+        return new Professional(
+            data.id,
+            data.name,
+            data.role,
+            data.bio,
+            data.imageUrl,
+            new Date(data.createdAt)
+        );
+    }
+
+    async update(professional: Partial<Professional>): Promise<Professional> {
+        const { data, error } = await supabase
+            .from('Professional')
+            .update({
+                name: professional.name,
+                role: professional.role,
+                bio: professional.bio,
+                imageUrl: professional.imageUrl,
+            })
+            .eq('id', professional.id)
+            .single<Professional>();
+
+        if (error) {
+            console.error(error);
+            throw new Error('Failed to update professional');
+        }
+
+        return new Professional(
+            data.id,
+            data.name,
+            data.role,
+            data.bio,
+            data.imageUrl,
+            new Date(data.createdAt)
+        );
+    }
+
+    async delete(id: number): Promise<void> {
+        const { error } = await supabase
+            .from('Professional')
+            .delete()
+            .eq('id', id);
+        if (error) {
+            console.error(error);
+            throw new Error('Failed to delete professional');
+        }
+    }
+}
