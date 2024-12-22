@@ -19,7 +19,7 @@ const openapi = fromHono(app, {
 
 config();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',');
+const allowedOrigins = '*';
 
 app.use('*', cors({
 	origin: allowedOrigins
