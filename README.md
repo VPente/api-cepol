@@ -1,25 +1,36 @@
 # Cloudflare Workers OpenAPI 3.1
 
-This is a Cloudflare Worker with OpenAPI 3.1 using [chanfana](https://github.com/cloudflare/chanfana) and [Hono](https://github.com/honojs/hono).
+Este é um Worker do Cloudflare com OpenAPI 3.1 usando [chanfana](https://github.com/cloudflare/chanfana) e [Hono](https://github.com/honojs/hono).
 
-This is an example project made to be used as a quick start into building OpenAPI compliant Workers that generates the
-`openapi.json` schema automatically from code and validates the incoming request to the defined parameters or request body.
+Este é um projeto de exemplo feito para ser usado como um ponto de partida rápido para construir Workers compatíveis com OpenAPI que geram o esquema `openapi.json` automaticamente a partir do código e validam a solicitação recebida de acordo com os parâmetros ou corpo da solicitação definidos.
 
-## Get started
+## Começando
 
-1. Sign up for [Cloudflare Workers](https://workers.dev). The free tier is more than enough for most use cases.
-2. Clone this project and install dependencies with `npm install`
-3. Run `wrangler login` to login to your Cloudflare account in wrangler
-4. Run `wrangler deploy` to publish the API to Cloudflare Workers
+1. Inscreva-se no [Cloudflare Workers](https://workers.dev). O plano gratuito é mais do que suficiente para a maioria dos casos de uso.
+2. Clone este projeto e instale as dependências com `npm install`.
+3. Execute `wrangler login` para fazer login na sua conta Cloudflare no wrangler.
+4. Execute `wrangler deploy` para publicar a API no Cloudflare Workers.
 
-## Project structure
+## Estrutura do Projeto
 
-1. Your main router is defined in `src/index.ts`.
-2. Each endpoint has its own file in `src/endpoints/`.
-3. For more information read the [chanfana documentation](https://chanfana.pages.dev/) and [Hono documentation](https://hono.dev/docs).
+1. Seu roteador principal está definido em [`src/index.ts`](src/index.ts).
+2. Cada endpoint tem seu próprio arquivo em `src/endpoints/`.
+3. Para mais informações, leia a [documentação do chanfana](https://chanfana.pages.dev/) e a [documentação do Hono](https://hono.dev/docs).
 
-## Development
+## Desenvolvimento
 
-1. Run `wrangler dev` to start a local instance of the API.
-2. Open `http://localhost:8787/` in your browser to see the Swagger interface where you can try the endpoints.
-3. Changes made in the `src/` folder will automatically trigger the server to reload, you only need to refresh the Swagger interface.
+1. Execute `wrangler dev` para iniciar uma instância local da API.
+2. Abra `http://localhost:8787/` no seu navegador para ver a interface Swagger onde você pode testar os endpoints.
+3. As alterações feitas na pasta `src/` irão automaticamente reiniciar o servidor, você só precisa atualizar a interface Swagger.
+
+## Contribuição
+
+1. Faça um fork do projeto.
+2. Crie uma nova branch (`git checkout -b feature/nova-funcionalidade`).
+3. Faça commit das suas alterações (`git commit -am 'Adiciona nova funcionalidade'`).
+4. Faça push para a branch (`git push origin feature/nova-funcionalidade`).
+5. Crie um novo Pull Request.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
