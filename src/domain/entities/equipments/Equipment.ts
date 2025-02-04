@@ -4,7 +4,8 @@ export class Equipment {
         public name: string,
         public description: string | null,
         public imageUrl: string | null,
-        public createdAt: Date
+        public createdAt: Date,
+        public type: string | null
     ) {
         this.validate();
     }

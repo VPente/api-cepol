@@ -19,6 +19,7 @@ export class UpdateEquipmentController extends OpenAPIRoute {
                             name: z.string().min(1, { message: 'Name is required' }),
                             description: z.string().optional(),
                             imageUrl: z.string().url({ message: 'Invalid URL' }).optional(),
+                            type: z.string().optional(),
                         }),
                     },
                 },
@@ -38,6 +39,7 @@ export class UpdateEquipmentController extends OpenAPIRoute {
                                 imageUrl: z.string().nullable(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                type: z.string().nullable(),
                             }),
                         }),
                     },
@@ -71,12 +73,12 @@ export class UpdateEquipmentController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { id, name, description, imageUrl } = data.body;
+        const { id, name, description, imageUrl, type } = data.body;
 
         try {
             const updateEquipmentUseCase = new UpdateEquipmentUseCase(equipmentRepository);
 
-            const equipment = await updateEquipmentUseCase.execute({ id, name, description, imageUrl });
+            const equipment = await updateEquipmentUseCase.execute({ id, name, description, imageUrl, type });
 
             return {
                 success: true,

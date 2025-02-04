@@ -25,7 +25,8 @@ export class EquipmentRepository implements IEquipmentRepository {
                 data.name,
                 data.description,
                 data.imageUrl,
-                new Date(data.createdAt)
+                new Date(data.createdAt),
+                data.type
             )
             : null;
     }
@@ -46,7 +47,8 @@ export class EquipmentRepository implements IEquipmentRepository {
                 equipment.name,
                 equipment.description,
                 equipment.imageUrl,
-                new Date(equipment.createdAt)
+                new Date(equipment.createdAt),
+                equipment.type
             )
         );
     }
@@ -75,7 +77,8 @@ export class EquipmentRepository implements IEquipmentRepository {
             data.name,
             data.description,
             data.imageUrl,
-            new Date(data.createdAt)
+            new Date(data.createdAt),
+            data.type
         );
     }
 
@@ -100,7 +103,8 @@ export class EquipmentRepository implements IEquipmentRepository {
             data.name,
             data.description,
             data.imageUrl,
-            new Date(data.createdAt)
+            new Date(data.createdAt),
+            data.type
         );
     }
 

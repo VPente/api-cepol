@@ -26,7 +26,8 @@ export class ProfessionalRepository implements IProfessionalRepository {
                 data.role,
                 data.bio,
                 data.imageUrl,
-                new Date(data.createdAt)
+                new Date(data.createdAt),
+                data.hierarchy
             )
             : null;
     }
@@ -48,7 +49,8 @@ export class ProfessionalRepository implements IProfessionalRepository {
                 professional.role,
                 professional.bio,
                 professional.imageUrl,
-                new Date(professional.createdAt)
+                new Date(professional.createdAt),
+                professional.hierarchy
             )
         );
     }
@@ -63,6 +65,7 @@ export class ProfessionalRepository implements IProfessionalRepository {
                     bio: professional.bio,
                     imageUrl: professional.imageUrl,
                     createdAt: new Date(),
+                    hierarchy: professional.hierarchy
                 }
             ])
             .select()
@@ -79,7 +82,8 @@ export class ProfessionalRepository implements IProfessionalRepository {
             data.role,
             data.bio,
             data.imageUrl,
-            new Date(data.createdAt)
+            new Date(data.createdAt),
+            data.hierarchy
         );
     }
 
@@ -106,7 +110,8 @@ export class ProfessionalRepository implements IProfessionalRepository {
             data.role,
             data.bio,
             data.imageUrl,
-            new Date(data.createdAt)
+            new Date(data.createdAt),
+            data.hierarchy
         );
     }
 

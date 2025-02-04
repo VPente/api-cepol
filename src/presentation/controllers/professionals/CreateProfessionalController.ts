@@ -19,6 +19,7 @@ export class CreateProfessionalController extends OpenAPIRoute {
                             role: z.string().min(1, { message: 'Role is required' }),
                             bio: z.string().optional(),
                             imageUrl: z.string().url({ message: 'Invalid URL' }).optional(),
+                            hierarchy: z.number().nullable(),
                         }),
                     },
                 },
@@ -38,6 +39,7 @@ export class CreateProfessionalController extends OpenAPIRoute {
                                 bio: z.string().nullable(),
                                 imageUrl: z.string().nullable(),
                                 createdAt: z.string(),
+                                hierarchy: z.number().nullable(),
                             }),
                         }),
                     },
@@ -60,12 +62,12 @@ export class CreateProfessionalController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { name, role, bio, imageUrl } = data.body;
+        const { name, role, bio, imageUrl, hierarchy } = data.body;
 
         try {
             const createProfessionalUseCase = new CreateProfessionalUseCase(professionalRepository);
 
-            const professional = await createProfessionalUseCase.execute({ name, role, bio, imageUrl });
+            const professional = await createProfessionalUseCase.execute({ name, role, bio, imageUrl, hierarchy });
 
             return {
                 success: true,
@@ -76,6 +78,7 @@ export class CreateProfessionalController extends OpenAPIRoute {
                     bio: professional.bio,
                     imageUrl: professional.imageUrl,
                     createdAt: professional.createdAt.toISOString(),
+                    hierarchy: professional.hierarchy,
                 },
             };
         } catch (error) {

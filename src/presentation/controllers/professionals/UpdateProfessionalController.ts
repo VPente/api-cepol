@@ -20,6 +20,7 @@ export class UpdateProfessionalController extends OpenAPIRoute {
                             role: z.string().min(1, { message: 'Role is required' }),
                             bio: z.string().optional(),
                             imageUrl: z.string().url({ message: 'Invalid URL' }).optional(),
+                            hierarchy: z.number().nullable(),
                         }),
                     },
                 },
@@ -39,6 +40,7 @@ export class UpdateProfessionalController extends OpenAPIRoute {
                                 bio: z.string().nullable(),
                                 imageUrl: z.string().nullable(),
                                 createdAt: z.string(),
+                                hierarchy: z.number().nullable(),
                             }),
                         }),
                     },
@@ -72,12 +74,12 @@ export class UpdateProfessionalController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { id, name, role, bio, imageUrl } = data.body;
+        const { id, name, role, bio, imageUrl, hierarchy } = data.body;
 
         try {
             const updateProfessionalUseCase = new UpdateProfessionalUseCase(professionalRepository);
 
-            const professional = await updateProfessionalUseCase.execute({ id, name, role, bio, imageUrl });
+            const professional = await updateProfessionalUseCase.execute({ id, name, role, bio, imageUrl, hierarchy });
 
             return {
                 success: true,
@@ -88,6 +90,7 @@ export class UpdateProfessionalController extends OpenAPIRoute {
                     bio: professional.bio,
                     imageUrl: professional.imageUrl,
                     createdAt: professional.createdAt.toISOString(),
+                    hierarchy: professional.hierarchy,
                 },
             };
         } catch (error) {

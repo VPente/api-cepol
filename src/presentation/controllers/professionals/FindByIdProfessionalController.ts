@@ -34,6 +34,7 @@ export class FindByIdProfessionalController extends OpenAPIRoute {
                                 bio: z.string().nullable(),
                                 imageUrl: z.string().nullable(),
                                 createdAt: z.string(),
+                                hierarchy: z.number().nullable(),
                             }).nullable(),
                         }),
                     },
@@ -75,6 +76,7 @@ export class FindByIdProfessionalController extends OpenAPIRoute {
                     bio: professional.bio,
                     imageUrl: professional.imageUrl,
                     createdAt: professional.createdAt.toISOString(),
+                    hierarchy: professional.hierarchy,
                 },
             };
         } catch (error) {

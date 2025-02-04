@@ -33,6 +33,7 @@ export class FindByIdEquipmentController extends OpenAPIRoute {
                                 description: z.string().nullable(),
                                 imageUrl: z.string().nullable(),
                                 createdAt: z.string(),
+                                type: z.string().nullable(),
                             }).nullable(),
                         }),
                     },
@@ -73,6 +74,7 @@ export class FindByIdEquipmentController extends OpenAPIRoute {
                     description: equipment.description,
                     imageUrl: equipment.imageUrl,
                     createdAt: equipment.createdAt.toISOString(),
+                    type: equipment.type,
                 },
             };
         } catch (error) {
