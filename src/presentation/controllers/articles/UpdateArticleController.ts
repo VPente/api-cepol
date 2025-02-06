@@ -17,8 +17,16 @@ export class UpdateArticleController extends OpenAPIRoute {
                         schema: z.object({
                             id: z.number().min(1, { message: 'ID is required' }),
                             title: z.string().min(1, { message: 'Title is required' }),
-                            content: z.string().min(1, { message: 'Content is required' }),
-                            fileUrl: z.string().url({ message: 'Invalid URL' }).optional(),
+                            description: z.string().optional(),
+                            bodyText: z.string().optional(),
+                            secondText: z.string().optional(),
+                            images: z.array(z.object({
+                                id: z.number().nullable().optional(),
+                                researchId: z.number().nullable().optional(),
+                                url: z.string().url({ message: 'Invalid URL' }).nonempty({ message: 'URL is required' }),
+                                title: z.string().optional(),
+                                description: z.string().optional(),
+                            })).optional(),
                         }),
                     },
                 },
@@ -34,8 +42,15 @@ export class UpdateArticleController extends OpenAPIRoute {
                             result: z.object({
                                 id: z.number(),
                                 title: z.string(),
-                                content: z.string(),
-                                fileUrl: z.string().nullable(),
+                                description: z.string().nullable(),
+                                bodyText: z.string().nullable(),
+                                secondText: z.string().nullable(),
+                                images: z.array(z.object({
+                                    id: z.number().nullable(),
+                                    url: z.string().nullable(),
+                                    title: z.string().nullable(),
+                                    description: z.string().nullable(),
+                                })).nullable(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
                             }),
@@ -71,20 +86,40 @@ export class UpdateArticleController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { id, title, content, fileUrl } = data.body;
+        const { id, title, description, bodyText, secondText, images } = data.body;
 
         try {
             const updateArticleUseCase = new UpdateArticleUseCase(articleRepository);
 
-            const article = await updateArticleUseCase.execute({ id, title, content, fileUrl });
+            const article = await updateArticleUseCase.execute({
+                id,
+                title,
+                description,
+                bodyText,
+                secondText,
+                image: images.map(image => ({
+                    id: image.id,
+                    url: image.url,
+                    title: image.title,
+                    description: image.description
+                })),
+            });
 
             return {
                 success: true,
                 result: {
                     id: article.id,
                     title: article.title,
-                    content: article.content,
-                    fileUrl: article.fileUrl,
+                    description: article.description,
+                    bodyText: article.bodyText,
+                    secondText: article.secondText,
+                    images: article.image ? article.image.map(image => ({
+                        id: image.id,
+                        articleId: image.articleId,
+                        url: image.url,
+                        title: image.title,
+                        description: image.description,
+                    })) : null,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
                 },

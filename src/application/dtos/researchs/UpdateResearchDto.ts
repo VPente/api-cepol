@@ -14,8 +14,6 @@ export class UpdateResearchDto {
         description: string,
         bodyText: string,
         secondText: string,
-        createdAt: Date,
-        updatedAt: Date,
         images: UpdateResearchImageDto[] | null
     ) {
         this.id = id;

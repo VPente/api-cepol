@@ -11,23 +11,6 @@ export class Research {
         public updatedAt: Date,
         public image: ResearchImage[] | null,
     ) {
-        this.validate();
-    }
 
-    private validate() {
-        if (!this.title || this.title.trim().length === 0) {
-            throw new Error("O título é obrigatório.");
-        }
-    }
-
-    public updateDescription(newDescription: string) {
-        this.description = newDescription;
-    }
-
-    public updateTitle(newTitle: string) {
-        if (!newTitle || newTitle.trim().length === 0) {
-            throw new Error("O novo título é obrigatório.");
-        }
-        this.title = newTitle;
     }
 }

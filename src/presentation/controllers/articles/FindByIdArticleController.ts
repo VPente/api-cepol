@@ -30,10 +30,18 @@ export class FindByIdArticleController extends OpenAPIRoute {
                             result: z.object({
                                 id: z.number(),
                                 title: z.string(),
-                                content: z.string(),
-                                fileUrl: z.string().nullable(),
+                                description: z.string(),
+                                bodyText: z.string(),
+                                secondText: z.string(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                images: z.array(z.object({
+                                    id: z.number().nullable(),
+                                    researchId: z.number().nullable(),
+                                    url: z.string().nullable(),
+                                    title: z.string().nullable(),
+                                    description: z.string().nullable(),
+                                })).nullable(),
                             }).nullable(),
                         }),
                     },
@@ -71,10 +79,18 @@ export class FindByIdArticleController extends OpenAPIRoute {
                 result: {
                     id: article.id,
                     title: article.title,
-                    content: article.content,
-                    fileUrl: article.fileUrl,
+                    description: article.description,
+                    bodyText: article.bodyText,
+                    secondText: article.secondText,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
+                    images: article.image ? article.image.map(image => ({
+                        id: image.id,
+                        articleId: image.articleId,
+                        url: image.url,
+                        title: image.title,
+                        description: image.description,
+                    })) : null,
                 },
             };
         } catch (error) {

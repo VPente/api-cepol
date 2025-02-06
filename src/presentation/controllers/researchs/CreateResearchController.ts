@@ -74,22 +74,20 @@ export class CreateResearchController extends OpenAPIRoute {
         const data = await this.getValidatedData<typeof this.schema>();
 
         const { title, description, bodyText, secondText, images } = data.body;
-
+        console.log('images', images);
         try {
             const createResearchUseCase = new CreateResearchUseCase(researchRepository);
 
             const research = await createResearchUseCase.execute({
                 title,
                 description,
-                bodyText, 
-                secondText, 
+                bodyText,
+                secondText,
                 images: images.map(image => ({
-                     url: image.url, 
-                     title: image.title, 
-                     description: image.description 
-                    })),
-                createdAt: new Date(),
-                updatedAt: new Date()
+                    url: image.url,
+                    title: image.title,
+                    description: image.description
+                }))
             });
 
             return {

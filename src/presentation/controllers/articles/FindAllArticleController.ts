@@ -20,10 +20,18 @@ export class FindAllArticleController extends OpenAPIRoute {
                             result: z.array(z.object({
                                 id: z.number(),
                                 title: z.string(),
-                                content: z.string(),
-                                fileUrl: z.string().nullable(),
+                                description: z.string().nullable(),
+                                bodyText: z.string(),
+                                secondText: z.string(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                images: z.array(z.object({
+                                    id: z.number().nullable(),
+                                    researchId: z.number().nullable(),
+                                    url: z.string().nullable(),
+                                    title: z.string().nullable(),
+                                    description: z.string().nullable(),
+                                })).nullable(),
                             })),
                         }),
                     },
@@ -53,10 +61,18 @@ export class FindAllArticleController extends OpenAPIRoute {
                 result: articles.map(article => ({
                     id: article.id,
                     title: article.title,
-                    content: article.content,
-                    fileUrl: article.fileUrl,
+                    description: article.description,
+                    bodyText: article.bodyText,
+                    secondText: article.secondText,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
+                    images: article.image ? article.image.map(image => ({
+                        id: image.id,
+                        researchId: image.articleId,
+                        url: image.url,
+                        title: image.title,
+                        description: image.description,
+                    })) : null,
                 })),
             };
         } catch (error) {

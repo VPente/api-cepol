@@ -122,7 +122,9 @@ export class ResearchRepository implements IResearchRepository {
                     url: image.url,
                     title: image.title,
                     description: image.description,
-                })));
+                })))
+                .select()
+                .single();
 
             if (!savedImages || errorImages !== null) {
                 console.error(errorImages);
@@ -137,7 +139,7 @@ export class ResearchRepository implements IResearchRepository {
                 savedResearch.secondText,
                 new Date(savedResearch.createdAt),
                 new Date(savedResearch.updatedAt),
-                (savedImages || []).map((image: any) =>
+                (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ResearchImage(
                         image.id,
                         image.researchId,
@@ -215,7 +217,7 @@ export class ResearchRepository implements IResearchRepository {
                 updatedResearch.secondText,
                 new Date(updatedResearch.createdAt),
                 new Date(updatedResearch.updatedAt),
-                (savedImages || []).map((image: any) =>
+                (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ResearchImage(
                         image.id,
                         image.researchId,
