@@ -19,6 +19,7 @@ export class CreateResearchController extends OpenAPIRoute {
                             description: z.string().optional(),
                             bodyText: z.string().optional(),
                             secondText: z.string().optional(),
+                            professionalId: z.number().optional(),
                             images: z.array(z.object({
                                 url: z.string().url({ message: 'Invalid URL' }).optional(),
                                 title: z.string().optional(),
@@ -42,6 +43,7 @@ export class CreateResearchController extends OpenAPIRoute {
                                 description: z.string().nullable(),
                                 bodyText: z.string().nullable(),
                                 secondText: z.string().nullable(),
+                                professionalId: z.number().optional(),
                                 images: z.array(z.object({
                                     id: z.number(),
                                     researchId: z.number(),
@@ -73,8 +75,8 @@ export class CreateResearchController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { title, description, bodyText, secondText, images } = data.body;
-        console.log('images', images);
+        const { title, description, bodyText, secondText, professionalId, images } = data.body;
+
         try {
             const createResearchUseCase = new CreateResearchUseCase(researchRepository);
 
@@ -83,6 +85,7 @@ export class CreateResearchController extends OpenAPIRoute {
                 description,
                 bodyText,
                 secondText,
+                professionalId,
                 images: images.map(image => ({
                     url: image.url,
                     title: image.title,

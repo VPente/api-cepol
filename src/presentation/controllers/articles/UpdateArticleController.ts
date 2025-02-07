@@ -20,6 +20,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                             description: z.string().optional(),
                             bodyText: z.string().optional(),
                             secondText: z.string().optional(),
+                            professionalId: z.number().nullable(),
                             images: z.array(z.object({
                                 id: z.number().nullable().optional(),
                                 researchId: z.number().nullable().optional(),
@@ -45,14 +46,15 @@ export class UpdateArticleController extends OpenAPIRoute {
                                 description: z.string().nullable(),
                                 bodyText: z.string().nullable(),
                                 secondText: z.string().nullable(),
+                                createdAt: z.string(),
+                                updatedAt: z.string(),
+                                professionalId: z.number().nullable(),
                                 images: z.array(z.object({
                                     id: z.number().nullable(),
                                     url: z.string().nullable(),
                                     title: z.string().nullable(),
                                     description: z.string().nullable(),
                                 })).nullable(),
-                                createdAt: z.string(),
-                                updatedAt: z.string(),
                             }),
                         }),
                     },
@@ -86,7 +88,7 @@ export class UpdateArticleController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { id, title, description, bodyText, secondText, images } = data.body;
+        const { id, title, description, bodyText, secondText, professionalId, images } = data.body;
 
         try {
             const updateArticleUseCase = new UpdateArticleUseCase(articleRepository);
@@ -97,6 +99,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                 description,
                 bodyText,
                 secondText,
+                professionalId,
                 image: images.map(image => ({
                     id: image.id,
                     url: image.url,
@@ -113,7 +116,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                     description: article.description,
                     bodyText: article.bodyText,
                     secondText: article.secondText,
-                    images: article.image ? article.image.map(image => ({
+                    images: article.images ? article.images.map(image => ({
                         id: image.id,
                         articleId: image.articleId,
                         url: image.url,

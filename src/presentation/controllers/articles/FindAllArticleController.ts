@@ -25,6 +25,7 @@ export class FindAllArticleController extends OpenAPIRoute {
                                 secondText: z.string(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                professionalId: z.number().nullable(),
                                 images: z.array(z.object({
                                     id: z.number().nullable(),
                                     researchId: z.number().nullable(),
@@ -32,6 +33,13 @@ export class FindAllArticleController extends OpenAPIRoute {
                                     title: z.string().nullable(),
                                     description: z.string().nullable(),
                                 })).nullable(),
+                                professional: z.object({
+                                    id: z.number(),
+                                    name: z.string(),
+                                    email: z.string(),
+                                    password: z.string(),
+                                    role: z.string(),
+                                }).nullable(),
                             })),
                         }),
                     },
@@ -66,13 +74,22 @@ export class FindAllArticleController extends OpenAPIRoute {
                     secondText: article.secondText,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
-                    images: article.image ? article.image.map(image => ({
+                    professionalId: article.professionalId,
+                    images: article.images ? article.images.map(image => ({
                         id: image.id,
                         researchId: image.articleId,
                         url: image.url,
                         title: image.title,
                         description: image.description,
                     })) : null,
+                    professional: article.professional ? {
+                        id: article.professional.id,
+                        name: article.professional.name,
+                        bio: article.professional.bio,
+                        hierarchy: article.professional.hierarchy,
+                        imageUrl: article.professional.imageUrl,
+                        role: article.professional.role,
+                    } : null,
                 })),
             };
         } catch (error) {

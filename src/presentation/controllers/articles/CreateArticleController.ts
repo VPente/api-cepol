@@ -19,6 +19,7 @@ export class CreateArticleController extends OpenAPIRoute {
                             description: z.string().optional(),
                             bodyText: z.string().optional(),
                             secondText: z.string().optional(),
+                            professionalId: z.number().optional(),
                             images: z.array(z.object({
                                 url: z.string().url({ message: 'Invalid URL' }).optional(),
                                 title: z.string().optional(),
@@ -42,6 +43,7 @@ export class CreateArticleController extends OpenAPIRoute {
                                 description: z.string().nullable(),
                                 bodyText: z.string().nullable(),
                                 secondText: z.string().nullable(),
+                                professionalId: z.number().optional(),
                                 images: z.array(z.object({
                                     id: z.number(),
                                     researchId: z.number(),
@@ -73,7 +75,7 @@ export class CreateArticleController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { title, description, bodyText, secondText, images } = data.body;
+        const { title, description, bodyText, secondText, professionalId, images } = data.body;
 
         try {
             const createArticleUseCase = new CreateArticleUseCase(articleRepository);
@@ -83,13 +85,12 @@ export class CreateArticleController extends OpenAPIRoute {
                 description,
                 bodyText,
                 secondText,
-                image: images.map(image => ({
+                professionalId,
+                images: images.map(image => ({
                     url: image.url,
                     title: image.title,
                     description: image.description
                 })),
-                createdAt: new Date(),
-                updatedAt: new Date()
             });
 
             return {
@@ -100,7 +101,8 @@ export class CreateArticleController extends OpenAPIRoute {
                     description: article.description,
                     bodyText: article.bodyText,
                     secondText: article.secondText,
-                    images: article.image,
+                    professionalId: article.professionalId,
+                    images: article.images,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
                 },

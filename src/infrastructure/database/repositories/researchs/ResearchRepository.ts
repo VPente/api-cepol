@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Professional } from 'domain/entities/professionals/Professional';
 import { Research } from 'domain/entities/researchs/Research';
 import { ResearchImage } from 'domain/entities/researchs/ResearchImage';
 import { IResearchRepository } from 'domain/interfaces/researchs/IResearchRepository';
@@ -29,6 +30,16 @@ export class ResearchRepository implements IResearchRepository {
             return null;
         }
 
+        const { data: professionals, error: errorProfessionals } = await supabase
+            .from("Professional")
+            .select("*")
+            .in("id", data.professionalId);
+
+        if (errorProfessionals) {
+            console.error(errorProfessionals);
+            return null;
+        }
+
         return data ? new Research(
             data.id,
             data.title,
@@ -37,6 +48,7 @@ export class ResearchRepository implements IResearchRepository {
             data.secondText,
             new Date(data.createdAt),
             new Date(data.updatedAt),
+            data.professionalId,
             images ? images.map((image: any) =>
                 new ResearchImage(
                     image.id,
@@ -45,7 +57,18 @@ export class ResearchRepository implements IResearchRepository {
                     image.title,
                     image.description
                 )
-            ) : null
+            ) : null,
+            professionals ? professionals.filter((professional: any) => professional.id === data.professionalId).map((professional: any) =>
+                new Professional(
+                    professional.id,
+                    professional.name,
+                    professional.email,
+                    professional.phone,
+                    professional.avatar,
+                    professional.createdAt,
+                    professional.updatedAt,
+                )
+            )[0] : null,
         ) : null;
     }
 
@@ -71,6 +94,20 @@ export class ResearchRepository implements IResearchRepository {
             return [];
         }
 
+        const professionalIds = researchs
+            .filter(research => research.professionalId !== null)
+            .map(research => research.professionalId);
+
+        const { data: professionals, error: errorProfessionals } = await supabase
+            .from("Professional")
+            .select("*")
+            .in("id", professionalIds);
+
+        if (errorProfessionals) {
+            console.error("ErrorProfessionals: ", errorProfessionals);
+            return null;
+        }
+
         return researchs.map((research: any) =>
             new Research(
                 research.id,
@@ -80,6 +117,7 @@ export class ResearchRepository implements IResearchRepository {
                 research.secondText,
                 new Date(research.createdAt),
                 new Date(research.updatedAt),
+                research.professionalId,
                 images ? images.filter((image: any) => image.researchId === research.id).map((image: any) =>
                     new ResearchImage(
                         image.id,
@@ -88,7 +126,18 @@ export class ResearchRepository implements IResearchRepository {
                         image.title,
                         image.description
                     )
-                ) : null
+                ) : null,
+                professionals ? professionals.filter((professional: any) => professional.id === research.professionalId).map((professional: any) =>
+                    new Professional(
+                        professional.id,
+                        professional.name,
+                        professional.email,
+                        professional.phone,
+                        professional.avatar,
+                        professional.createdAt,
+                        professional.updatedAt,
+                    )
+                )[0] : null,
             )
         );
     }
@@ -104,6 +153,7 @@ export class ResearchRepository implements IResearchRepository {
                     secondText: research.secondText,
                     createdAt: new Date(),
                     updatedAt: new Date(),
+                    professionalId: research.professionalId,
                 }
             ])
             .select()
@@ -139,6 +189,7 @@ export class ResearchRepository implements IResearchRepository {
                 savedResearch.secondText,
                 new Date(savedResearch.createdAt),
                 new Date(savedResearch.updatedAt),
+                savedResearch.professionalId,
                 (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ResearchImage(
                         image.id,
@@ -147,7 +198,8 @@ export class ResearchRepository implements IResearchRepository {
                         image.title,
                         image.description
                     )
-                )
+                ),
+                null
             );
         }
 
@@ -159,20 +211,27 @@ export class ResearchRepository implements IResearchRepository {
             savedResearch.secondText,
             new Date(savedResearch.createdAt),
             new Date(savedResearch.updatedAt),
+            savedResearch.professionalId,
+            null,
             null
         );
     }
-
     async update(research: Partial<Research & { images?: Partial<ResearchImage>[] }>): Promise<Research> {
+        const updateData: any = {
+            title: research.title,
+            description: research.description,
+            bodyText: research.bodyText,
+            secondText: research.secondText,
+            updatedAt: new Date(),
+        };
+
+        if (research.professionalId !== undefined) {
+            updateData.professionalId = research.professionalId;
+        }
+
         const { data: updatedResearch, error } = await supabase
             .from('Research')
-            .update({
-                title: research.title,
-                description: research.description,
-                bodyText: research.bodyText,
-                secondText: research.secondText,
-                updatedAt: new Date(),
-            })
+            .update(updateData)
             .eq('id', research.id)
             .select()
             .single();
@@ -217,6 +276,7 @@ export class ResearchRepository implements IResearchRepository {
                 updatedResearch.secondText,
                 new Date(updatedResearch.createdAt),
                 new Date(updatedResearch.updatedAt),
+                updatedResearch.professionalId,
                 (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ResearchImage(
                         image.id,
@@ -225,7 +285,8 @@ export class ResearchRepository implements IResearchRepository {
                         image.title,
                         image.description
                     )
-                )
+                ),
+                null
             );
         }
 
@@ -237,6 +298,8 @@ export class ResearchRepository implements IResearchRepository {
             updatedResearch.secondText,
             new Date(updatedResearch.createdAt),
             new Date(updatedResearch.updatedAt),
+            updatedResearch.professionalId,
+            null,
             null
         );
     }

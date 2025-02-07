@@ -6,6 +6,7 @@ export class UpdateResearchDto {
     description: string;
     bodyText: string;
     secondText: string;
+    professionalId: number | null;
     images: UpdateResearchImageDto[] | null;
 
     constructor(
@@ -14,6 +15,7 @@ export class UpdateResearchDto {
         description: string,
         bodyText: string,
         secondText: string,
+        professionalId: number | null,
         images: UpdateResearchImageDto[] | null
     ) {
         this.id = id;
@@ -21,6 +23,7 @@ export class UpdateResearchDto {
         this.description = description;
         this.bodyText = bodyText;
         this.secondText = secondText;
+        this.professionalId = professionalId;
         this.images = images;
     }
 }

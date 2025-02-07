@@ -20,6 +20,7 @@ export class UpdateResearchController extends OpenAPIRoute {
                             description: z.string().optional(),
                             bodyText: z.string().optional(),
                             secondText: z.string().optional(),
+                            professionalId: z.number().nullable(),
                             images: z.array(z.object({
                                 id: z.number().nullable().optional(),
                                 researchId: z.number().nullable().optional(),
@@ -45,6 +46,7 @@ export class UpdateResearchController extends OpenAPIRoute {
                                 description: z.string().nullable(),
                                 bodyText: z.string().nullable(),
                                 secondText: z.string().nullable(),
+                                professionalId: z.number().nullable(),
                                 images: z.array(z.object({
                                     id: z.number().nullable(),
                                     url: z.string().nullable(),
@@ -86,7 +88,7 @@ export class UpdateResearchController extends OpenAPIRoute {
     async handle(c) {
         const data = await this.getValidatedData<typeof this.schema>();
 
-        const { id, title, description, bodyText, secondText, images } = data.body;
+        const { id, title, description, bodyText, secondText, professionalId, images } = data.body;
 
         try {
             const updateResearchUseCase = new UpdateResearchUseCase(researchRepository);
@@ -97,6 +99,7 @@ export class UpdateResearchController extends OpenAPIRoute {
                 description,
                 bodyText,
                 secondText,
+                professionalId,
                 images: images.map(image => ({
                     id: image.id,
                     url: image.url,
@@ -113,6 +116,7 @@ export class UpdateResearchController extends OpenAPIRoute {
                     description: research.description,
                     bodyText: research.bodyText,
                     secondText: research.secondText,
+                    professionalId: research.professionalId,
                     images: research.image ? research.image.map(image => ({
                         id: image.id,
                         researchId: image.researchId,

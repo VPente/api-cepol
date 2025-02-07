@@ -1,3 +1,4 @@
+import { Professional } from "../professionals/Professional";
 import { ArticleImage } from "./ArticleImage";
 
 export class Article {
@@ -9,7 +10,9 @@ export class Article {
         public secondText: string,
         public createdAt: Date,
         public updatedAt: Date,
+        public professionalId: number | null,
         public images: ArticleImage[] | null,
+        public professional: Professional | null,
     ) {
     }
 
