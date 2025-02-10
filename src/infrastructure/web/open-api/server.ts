@@ -15,7 +15,23 @@ const app = new Hono();
 
 const openapi = fromHono(app, {
 	docs_url: "/",
+	schema: {
+		security: [
+			{
+				bearerAuth: [],
+			},
+		],
+	},
 });
+
+openapi.registry.registerComponent(
+	'securitySchemes',
+	'bearerAuth',
+	{
+		type: 'http',
+		scheme: 'bearer',
+	},
+);
 
 config();
 
@@ -25,18 +41,14 @@ app.use('*', cors({
 	origin: allowedOrigins
 }));
 
-app.use('*', async (c, next) => {
+app.use(RateLimit({ limit: 10, window: 1 }));
+app.use(Authorization);
 
-	await RateLimit(c, next);
-
-	if (c.req.url.includes('/auth') || c.req.url.includes('/public')) {
-		await next();
-		return;
-	}
-
-	await Authorization(c, next);
-	await next();
-	return;
+app.use((c, next) => {
+	c.res.headers.set('Content-Security-Policy', "default-src 'self'");
+	c.res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+	c.res.headers.set('X-Content-Type-Options', 'nosniff');
+	return next();
 });
 
 openapi.post('/auth/signin', SignInController);

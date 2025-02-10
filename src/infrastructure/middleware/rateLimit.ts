@@ -1,36 +1,22 @@
-type RateLimitStore = {
-    [key: string]: { count: number; lastRequestTime: number };
-};
+export const RateLimit = (options = { limit: 10, window: 60 }) => {
+    const requests = new Map();
 
-const rateLimitStore: RateLimitStore = {};
-const WINDOW_MS = 60 * 1000;
-const MAX_REQUESTS = 1;
+    return async (c, next) => {
+        const ip = c.req.raw.headers.get('CF-Connecting-IP') || c.req.raw.headers.get('x-forwarded-for') || 'unknown';
+        const now = Date.now();
+        const entry = requests.get(ip) || { count: 0, startTime: now };
 
-export const RateLimit = async (c, next) => {
-    const clientIp = c.req.headers?.['x-real-ip'] || c.req.headers?.['x-forwarded-for'] || c.req.socket?.remoteAddress || c.req.ip;
+        if (now - entry.startTime > options.window * 1000) {
+            requests.set(ip, { count: 1, startTime: now });
+        } else {
+            entry.count += 1;
+            requests.set(ip, entry);
+        }
 
-    console.log("clientIp: ", clientIp);
+        if (entry.count > options.limit) {
+            return c.json({ error: 'Rate limit exceeded' }, 429);
+        }
 
-    if (!clientIp) {
-        return c.json({ message: 'Não foi possível identificar o IP do cliente.' }, 400);
-    }
-
-    const currentTime = Date.now();
-    const clientData = rateLimitStore[clientIp] || { count: 0, lastRequestTime: currentTime };
-
-    if (currentTime - clientData.lastRequestTime > WINDOW_MS) {
-        clientData.count = 0;
-        clientData.lastRequestTime = currentTime;
-    }
-
-    clientData.count += 1;
-
-    rateLimitStore[clientIp] = clientData;
-
-    if (clientData.count > MAX_REQUESTS) {
-        await c.json({ message: 'Muitas requisições. Tente novamente mais tarde.' }, 429);
-        return;
-    }
-
-    await next();
+        await next();
+    };
 };
