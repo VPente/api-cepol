@@ -66,7 +66,7 @@ export class FindAllArticleController extends OpenAPIRoute {
                     secondText: article.secondText,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
-                    images: article.image ? article.image.map(image => ({
+                    images: article.images ? article.images.map(image => ({
                         id: image.id,
                         researchId: image.articleId,
                         url: image.url,

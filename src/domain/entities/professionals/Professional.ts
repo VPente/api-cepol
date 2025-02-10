@@ -19,7 +19,7 @@ export class Professional {
             throw new Error("O cargo é obrigatório.");
         }
         if (this.imageUrl && !this.imageUrl.startsWith("https://")) {
-            throw new Error("A URL da imagem deve ser válida e começar com https://.");
+            throw new Error(" e começar com https://.");
         }
     }
 

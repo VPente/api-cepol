@@ -113,7 +113,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                     description: article.description,
                     bodyText: article.bodyText,
                     secondText: article.secondText,
-                    images: article.image ? article.image.map(image => ({
+                    images: article.images ? article.images.map(image => ({
                         id: image.id,
                         articleId: image.articleId,
                         url: image.url,

@@ -83,7 +83,7 @@ export class CreateArticleController extends OpenAPIRoute {
                 description,
                 bodyText,
                 secondText,
-                image: images.map(image => ({
+                images: images.map(image => ({
                     url: image.url,
                     title: image.title,
                     description: image.description
@@ -100,7 +100,7 @@ export class CreateArticleController extends OpenAPIRoute {
                     description: article.description,
                     bodyText: article.bodyText,
                     secondText: article.secondText,
-                    images: article.image,
+                    images: article.images,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
                 },

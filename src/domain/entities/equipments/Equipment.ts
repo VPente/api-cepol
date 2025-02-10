@@ -24,7 +24,7 @@ export class Equipment {
     }
 
     public updateImageUrl(newImageUrl: string | null) {
-        if (newImageUrl && !newImageUrl.startsWith("https://")) {
+        if (newImageUrl && !newImageUrl.startsWith("http://")) {
             throw new Error("A nova URL da imagem deve ser válida e começar com https://.");
         }
         this.imageUrl = newImageUrl;

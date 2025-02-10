@@ -202,8 +202,8 @@ export class ResearchRepository implements IResearchRepository {
                     url: image.url,
                     title: image.title,
                     description: image.description,
-                })));
-
+                })))
+                .select(); // <-- Adicionado o .select() aqui
             if (!savedImages || errorImages !== null) {
                 console.error(errorImages);
                 throw new Error('Failed to update research images');
