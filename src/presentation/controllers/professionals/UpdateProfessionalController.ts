@@ -39,7 +39,6 @@ export class UpdateProfessionalController extends OpenAPIRoute {
                                 role: z.string(),
                                 bio: z.string().nullable(),
                                 imageUrl: z.string().nullable(),
-                                createdAt: z.string(),
                                 hierarchy: z.number().nullable(),
                             }),
                         }),
@@ -71,8 +70,8 @@ export class UpdateProfessionalController extends OpenAPIRoute {
         },
     };
 
-    async handle(c) {
-        const data = await this.getValidatedData<typeof this.schema>();
+    async handle(c: { body: { id: number; name: string; role: string; bio?: string; imageUrl?: string; hierarchy?: number | null } }) {
+        const data = await this.getValidatedData();
 
         const { id, name, role, bio, imageUrl, hierarchy } = data.body;
 

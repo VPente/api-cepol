@@ -88,6 +88,10 @@ export class ProfessionalRepository implements IProfessionalRepository {
     }
 
     async update(professional: Partial<Professional>): Promise<Professional> {
+        if (!professional.id) {
+            throw new Error('Professional ID is required for update');
+        }
+
         const { data, error } = await supabase
             .from('Professional')
             .update({
@@ -97,13 +101,14 @@ export class ProfessionalRepository implements IProfessionalRepository {
                 imageUrl: professional.imageUrl,
             })
             .eq('id', professional.id)
-            .single<Professional>();
+            .select()
+            .single();
 
         if (error) {
             console.error(error);
             throw new Error('Failed to update professional');
         }
-
+        
         return new Professional(
             data.id,
             data.name,

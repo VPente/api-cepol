@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { Article } from 'domain/entities/articles/Article';
 import { ArticleImage } from 'domain/entities/articles/ArticleImage';
+import { Professional } from 'domain/entities/professionals/Professional';
 import { IArticleRepository } from 'domain/interfaces/articles/IArticleRepository';
 import { SUPABASE_KEY, SUPABASE_URL } from '../../../../env';
 
@@ -35,6 +36,16 @@ export class ArticleRepository implements IArticleRepository {
             return null;
         }
 
+        const { data: professionals, error: errorProfessionals } = await supabase
+            .from("Professional")
+            .select("*")
+            .eq("id", data.professionalId);
+
+        if (errorProfessionals) {
+            console.error(errorProfessionals);
+            return null;
+        }
+
         return data ? new Article(
             data.id,
             data.title,
@@ -43,6 +54,7 @@ export class ArticleRepository implements IArticleRepository {
             data.secondText,
             new Date(data.createdAt),
             new Date(data.updatedAt),
+            data.professionalId,
             images ? images.map((image: any) =>
                 new ArticleImage(
                     image.id,
@@ -51,7 +63,18 @@ export class ArticleRepository implements IArticleRepository {
                     image.title,
                     image.description
                 )
-            ) : null
+            ) : null,
+            professionals ? professionals.filter((professional: any) => professional.id === data.professionalId).map((professional: any) =>
+                new Professional(
+                    professional.id,
+                    professional.name,
+                    professional.email,
+                    professional.phone,
+                    professional.avatar,
+                    professional.createdAt,
+                    professional.updatedAt,
+                )
+            )[0] : null,
         ) : null;
     }
 
@@ -77,6 +100,18 @@ export class ArticleRepository implements IArticleRepository {
             return [];
         }
 
+        const professionalIds = articles.map(article => article.professionalId);
+
+        const { data: professionals, error: errorProfessionals } = await supabase
+            .from("Professional")
+            .select("*")
+            .in("id", professionalIds);
+
+        if (errorProfessionals) {
+            console.error(errorProfessionals);
+            return [];
+        }
+
         return articles.map((article: any) =>
             new Article(
                 article.id,
@@ -86,6 +121,7 @@ export class ArticleRepository implements IArticleRepository {
                 article.secondText,
                 new Date(article.createdAt),
                 new Date(article.updatedAt),
+                article.professionalId,
                 images ? images.filter((image: any) => image.articleId === article.id).map((image: any) =>
                     new ArticleImage(
                         image.id,
@@ -94,7 +130,19 @@ export class ArticleRepository implements IArticleRepository {
                         image.title,
                         image.description
                     )
-                ) : null
+                ) : null,
+                professionals ? professionals.filter((professional: any) => professional.id === article.professionalId).map((professional: any) =>
+                    new Professional(
+                        professional.id,
+                        professional.name,
+                        professional.email,
+                        professional.phone,
+                        professional.avatar,
+                        professional.createdAt,
+                        professional.updatedAt,
+                    )
+                )[0] : null,
+
             )
         );
     }
@@ -108,6 +156,7 @@ export class ArticleRepository implements IArticleRepository {
                     description: article.description,
                     bodyText: article.bodyText,
                     secondText: article.secondText,
+                    professionalId: article.professionalId,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
@@ -144,6 +193,7 @@ export class ArticleRepository implements IArticleRepository {
                 savedArticle.secondText,
                 new Date(savedArticle.createdAt),
                 new Date(savedArticle.updatedAt),
+                savedArticle.professionalId,
                 (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ArticleImage(
                         image.id,
@@ -152,7 +202,8 @@ export class ArticleRepository implements IArticleRepository {
                         image.title,
                         image.description
                     )
-                )
+                ),
+                null
             );
         }
 
@@ -164,6 +215,8 @@ export class ArticleRepository implements IArticleRepository {
             savedArticle.secondText,
             new Date(savedArticle.createdAt),
             new Date(savedArticle.updatedAt),
+            savedArticle.professionalId,
+            null,
             null
         );
     }
@@ -178,6 +231,7 @@ export class ArticleRepository implements IArticleRepository {
                 secondText: article.secondText,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                professionalId: article.professionalId,
             })
             .eq('id', article.id)
             .select()
@@ -225,6 +279,7 @@ export class ArticleRepository implements IArticleRepository {
                 updatedArticle.secondText,
                 new Date(updatedArticle.createdAt),
                 new Date(updatedArticle.updatedAt),
+                updatedArticle.professionalId,
                 (Array.isArray(savedImages) ? savedImages : []).map((image: any) =>
                     new ArticleImage(
                         image.id,
@@ -233,7 +288,8 @@ export class ArticleRepository implements IArticleRepository {
                         image.title,
                         image.description
                     )
-                )
+                ),
+                null
             );
         }
 
@@ -245,6 +301,8 @@ export class ArticleRepository implements IArticleRepository {
             updatedArticle.secondText,
             new Date(updatedArticle.createdAt),
             new Date(updatedArticle.updatedAt),
+            updatedArticle.professionalId,
+            null,
             null
         );
     }

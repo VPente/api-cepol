@@ -35,6 +35,7 @@ export class FindByIdResearchController extends OpenAPIRoute {
                                 secondText: z.string(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                professionalId: z.number().nullable(),
                                 images: z.array(z.object({
                                     id: z.number().nullable(),
                                     researchId: z.number().nullable(),
@@ -84,6 +85,7 @@ export class FindByIdResearchController extends OpenAPIRoute {
                     secondText: research.secondText,
                     createdAt: research.createdAt.toISOString(),
                     updatedAt: research.updatedAt.toISOString(),
+                    professionalId: research.professionalId,
                     images: research.image ? research.image.map(image => ({
                         id: image.id,
                         researchId: image.researchId,

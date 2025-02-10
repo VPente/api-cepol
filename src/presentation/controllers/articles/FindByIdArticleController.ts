@@ -35,6 +35,7 @@ export class FindByIdArticleController extends OpenAPIRoute {
                                 secondText: z.string(),
                                 createdAt: z.string(),
                                 updatedAt: z.string(),
+                                professionalId: z.number().nullable(),
                                 images: z.array(z.object({
                                     id: z.number().nullable(),
                                     researchId: z.number().nullable(),
@@ -42,6 +43,13 @@ export class FindByIdArticleController extends OpenAPIRoute {
                                     title: z.string().nullable(),
                                     description: z.string().nullable(),
                                 })).nullable(),
+                                professional: z.object({
+                                    id: z.number(),
+                                    name: z.string(),
+                                    email: z.string(),
+                                    password: z.string(),
+                                    role: z.string(),
+                                }).nullable(),
                             }).nullable(),
                         }),
                     },
@@ -64,6 +72,7 @@ export class FindByIdArticleController extends OpenAPIRoute {
     async handle(req: { params: { id: number } }) {
         try {
             const { id } = req.params;
+
             const findByIdArticleUseCase = new FindByIdArticleUseCase(articleRepository);
             const article = await findByIdArticleUseCase.execute(id);
 
@@ -84,13 +93,15 @@ export class FindByIdArticleController extends OpenAPIRoute {
                     secondText: article.secondText,
                     createdAt: article.createdAt.toISOString(),
                     updatedAt: article.updatedAt.toISOString(),
-                    images: article.image ? article.image.map(image => ({
+                    professionalId: article.professionalId,
+                    images: article.images ? article.images.map(image => ({
                         id: image.id,
                         articleId: image.articleId,
                         url: image.url,
                         title: image.title,
                         description: image.description,
                     })) : null,
+                    professional: article.professional ? article.professional : null,
                 },
             };
         } catch (error) {
