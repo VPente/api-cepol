@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 export class ArticleRepository implements IArticleRepository {
 
     async findById(id: number): Promise<Article | null> {
-        const { data, error } = await supabase
+        const { data: articles, error } = await supabase
             .from('Article')
             .select('*')
             .eq('id', id)
@@ -39,22 +39,22 @@ export class ArticleRepository implements IArticleRepository {
         const { data: professionals, error: errorProfessionals } = await supabase
             .from("Professional")
             .select("*")
-            .eq("id", data.professionalId);
+            .eq("id", articles.professionalId);
 
         if (errorProfessionals) {
             console.error(errorProfessionals);
             return null;
         }
 
-        return data ? new Article(
-            data.id,
-            data.title,
-            data.description,
-            data.bodyText,
-            data.secondText,
-            new Date(data.createdAt),
-            new Date(data.updatedAt),
-            data.professionalId,
+        return articles ? new Article(
+            articles.id,
+            articles.title,
+            articles.description,
+            articles.bodyText,
+            articles.secondText,
+            new Date(articles.createdAt),
+            new Date(articles.updatedAt),
+            articles.professionalId,
             images ? images.map((image: any) =>
                 new ArticleImage(
                     image.id,
@@ -64,7 +64,7 @@ export class ArticleRepository implements IArticleRepository {
                     image.description
                 )
             ) : null,
-            professionals ? professionals.filter((professional: any) => professional.id === data.professionalId).map((professional: any) =>
+            professionals ? professionals.filter((professional: any) => professional.id === articles.professionalId).map((professional: any) =>
                 new Professional(
                     professional.id,
                     professional.name,
@@ -95,19 +95,21 @@ export class ArticleRepository implements IArticleRepository {
             .select("*")
             .in("articleId", articleIds);
 
-        if (errorImages) {
+        if (errorImages && errorImages !== null) {
             console.error(errorImages);
             return [];
         }
 
-        const professionalIds = articles.map(article => article.professionalId);
+        const professionalIds = articles
+            .map(article => article.professionalId)
+            .filter(professionalId => professionalId !== null);
 
         const { data: professionals, error: errorProfessionals } = await supabase
             .from("Professional")
             .select("*")
             .in("id", professionalIds);
 
-        if (errorProfessionals) {
+        if (errorProfessionals && errorProfessionals !== null) {
             console.error(errorProfessionals);
             return [];
         }

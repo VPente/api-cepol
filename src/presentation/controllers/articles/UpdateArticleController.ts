@@ -23,7 +23,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                             professionalId: z.number().nullable(),
                             images: z.array(z.object({
                                 id: z.number().nullable().optional(),
-                                researchId: z.number().nullable().optional(),
+                                articleId: z.number().nullable().optional(),
                                 url: z.string().url({ message: 'Invalid URL' }).nonempty({ message: 'URL is required' }),
                                 title: z.string().optional(),
                                 description: z.string().optional(),
@@ -54,6 +54,7 @@ export class UpdateArticleController extends OpenAPIRoute {
                                     url: z.string().nullable(),
                                     title: z.string().nullable(),
                                     description: z.string().nullable(),
+                                    articleId: z.number().nullable()
                                 })).nullable(),
                             }),
                         }),
@@ -104,7 +105,8 @@ export class UpdateArticleController extends OpenAPIRoute {
                     id: image.id,
                     url: image.url,
                     title: image.title,
-                    description: image.description
+                    description: image.description,
+                    articleId: image.articleId
                 })),
             });
 

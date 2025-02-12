@@ -1,4 +1,4 @@
-export const RateLimit = (options = { limit: 10, window: 60 }) => {
+export const RateLimit = (options = { limit: 10, window: 1 }) => {
     const requests = new Map();
 
     return async (c, next) => {

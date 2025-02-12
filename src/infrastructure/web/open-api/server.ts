@@ -1,9 +1,9 @@
 import { fromHono } from "chanfana";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 
 import { config } from 'dotenv';
 import { Authorization } from "infrastructure/middleware/authorization";
+import corsMiddleware from "infrastructure/middleware/cors";
 import { RateLimit } from "infrastructure/middleware/rateLimit";
 import { CreateArticleController, DeleteArticleController, FindAllArticleController, FindByIdArticleController, UpdateArticleController } from "presentation/controllers/articles";
 import { SignInController, SignOutController } from "presentation/controllers/auth/AuthController";
@@ -12,7 +12,6 @@ import { CreateProfessionalController, DeleteProfessionalController, FindAllProf
 import { CreateResearchController, DeleteResearchController, FindAllResearchController, FindByIdResearchController, UpdateResearchController } from "presentation/controllers/researchs";
 
 const app = new Hono();
-
 const openapi = fromHono(app, {
 	docs_url: "/",
 	schema: {
@@ -35,13 +34,9 @@ openapi.registry.registerComponent(
 
 config();
 
-const allowedOrigins = '*';
+app.use('*', corsMiddleware)
 
-app.use('*', cors({
-	origin: allowedOrigins
-}));
-
-app.use(RateLimit({ limit: 10, window: 1 }));
+app.use(RateLimit({ limit: 2, window: 1 }));
 app.use(Authorization);
 
 app.use((c, next) => {
@@ -81,6 +76,5 @@ openapi.get('/public/research/:id', FindByIdResearchController);
 openapi.put('/research', UpdateResearchController);
 openapi.post('/research', CreateResearchController);
 openapi.delete('/research/:id', DeleteResearchController);
-
 
 export default app;

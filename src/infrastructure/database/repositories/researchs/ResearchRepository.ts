@@ -95,8 +95,8 @@ export class ResearchRepository implements IResearchRepository {
         }
 
         const professionalIds = researchs
-            .filter(research => research.professionalId !== null)
-            .map(research => research.professionalId);
+            .map(research => research.professionalId)
+            .filter(professionalId => professionalId !== null);
 
         const { data: professionals, error: errorProfessionals } = await supabase
             .from("Professional")
