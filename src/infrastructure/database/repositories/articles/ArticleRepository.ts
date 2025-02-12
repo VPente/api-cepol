@@ -179,7 +179,8 @@ export class ArticleRepository implements IArticleRepository {
                     url: image.url,
                     title: image.title,
                     description: image.description,
-                })));
+                })))
+                .select();
 
             if (!savedImages || errorImages !== null) {
                 console.error(errorImages);
@@ -264,7 +265,8 @@ export class ArticleRepository implements IArticleRepository {
                     url: image.url,
                     title: image.title,
                     description: image.description,
-                })));
+                })))
+                .select(); 
 
             if (!savedImages || errorImages !== null) {
                 console.error(errorImages);
